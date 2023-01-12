@@ -31,6 +31,7 @@ class DocumentController extends Controller
     }
     public function index()
     {
+        oknaspdhaiosf
         $user = Session::get('auth');
         $id = $user->id;
         $keyword = Session::get('keyword');
