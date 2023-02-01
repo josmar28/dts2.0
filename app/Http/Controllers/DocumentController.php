@@ -1554,38 +1554,38 @@ class DocumentController extends Controller
                $minute = DocumentController::checkMinutes($validation->released_date); 
   
                 if($minute <= 45 && ($validation->status == "waiting" || $validation->status == "return" )
-                && $validation->sec_div != $pdoho && $validation->sec_div != $rled && $validation->sec_div != $datrc
-                && $released_by != $pdoho && $released_by != $rled && $released_by != $datrc){
+                && $validation->sec_div != $pdoho && $validation->sec_div != $datrc
+                && $released_by != $pdoho && $released_by != $datrc){
                     $release->update([
                         "status" => "accept"
                     ]);
                 }
                 elseif($minute > 45 && ($validation->status == "waiting"  || $validation->status == "return") 
-                && $validation->sec_div != $pdoho && $validation->sec_div != $rled && $validation->sec_div != $datrc
-                && $released_by != $pdoho && $released_by != $rled && $released_by != $datrc){
+                && $validation->sec_div != $pdoho && $validation->sec_div != $datrc
+                && $released_by != $pdoho && $released_by != $datrc){
                     $release->update([
                         "status" => "report"
                     ]);
                 } elseif($minute <= 960 && ($validation->status == "waiting"  || $validation->status == "return") 
-                && ($validation->sec_div == $pdoho || $validation->sec_div == $rled || $validation->sec_div == $datrc)) {
+                && ($validation->sec_div == $pdoho || $validation->sec_div == $datrc)) {
                     $release->update([
                         "status" => "accept"
                     ]);
                 } elseif($minute > 960 && ($validation->status == "waiting"  || $validation->status == "return") 
-                && ($validation->sec_div == $pdoho || $validation->sec_div == $rled || $validation->sec_div == $datrc)) {
+                && ($validation->sec_div == $pdoho || $validation->sec_div == $datrc)) {
                     $release->update([
                         "status" => "report"
                     ]);
                 }
                 elseif($minute <= 960 && ($validation->status == "waiting"  || $validation->status == "return") 
-                && ($released_by == $pdoho || $released_by == $rled || $released_by == $datrc) ) {
+                && ($released_by == $pdoho || $released_by == $datrc) ) {
                     $release->update([
                         "status" => "accept"
                     ]);
             
                 } 
                 elseif($minute > 960 && ($validation->status == "waiting"  || $validation->status == "return") 
-                && ($released_by == $pdoho || $released_by == $rled || $released_by == $datrc) ) {
+                && ($released_by == $pdoho || $released_by == $datrc) ) {
                     $release->update([
                         "status" => "report"
                     ]);

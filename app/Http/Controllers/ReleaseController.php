@@ -11,6 +11,7 @@ use App\Http\Requests;
 use App\Release;
 use App\Events\DocumentNotif;
 use App\User;
+use App\Users;
 use App\Section;
 use DateTime;
 use App\Tracking_Report;
@@ -27,6 +28,22 @@ class ReleaseController extends Controller
             $this->middleware('auth');
         }
     }
+
+    // public function updateFrom (Request $req)
+    // {
+    //     $data = Tracking_Releasev2::select('*')->orderby('id','asc')->get();
+
+    //     foreach ($data as $dat)
+    //     {
+    //         $section_from = Users::find($dat->released_by)->section;
+    //         $update = Tracking_Releasev2::where('id',$dat->id)
+    //         ->update(array(
+    //             'released_section_from' => $section_from
+    //         ));
+
+    //         print_r($section_from.'<br>');
+    //     }
+    // }
 
     public function addRelease(Request $req){
         $release_to_datein = date('Y-m-d H:i:s');
@@ -67,6 +84,7 @@ class ReleaseController extends Controller
 
                 $tracking_release = new Tracking_Releasev2();
                 $tracking_release->released_by = Session::get('auth')->id;
+                $tracking_release->released_section_from = Session::get('auth')->section;
                 $tracking_release->released_section_to = $req->section;
                 $tracking_release->released_date = $release_to_datein;
                 $tracking_release->remarks = $req->remarks;

@@ -78,6 +78,9 @@ Route::get('document/alert/{level}/{id}','ReleaseController@alert');
 Route::get('reported','ReleaseController@viewReported');
 
 
+//updateFrom
+Route::get('/updateFrom','ReleaseController@updateFrom');
+
 Route::get('getsections/{id}','ReleaseController@getSections');
 Route::get('allgetsections/{id}','ReleaseController@getSections');
 Route::get('document/doctype/{doctype}',function($doctype){

@@ -14,6 +14,7 @@ use App\User;
 use App\Users;
 use App\Section;
 use App\Tracking;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -222,8 +223,10 @@ class AdminController extends Controller
         $accepted = DB::table('tracking_details')
             ->leftJoin('users', 'tracking_details.received_by', '=', 'users.id')
             ->leftJoin('section', 'users.section', '=', 'section.id')
-            ->where('tracking_details.date_in','>=',$start)
-            ->where('tracking_details.date_in','<=',$end)
+            ->where(DB::raw('QUARTER(tracking_details.date_in)'), Carbon::now()->quarter)
+            ->where(DB::raw('YEAR(tracking_details.date_in)'), Carbon::now()->year)
+            // ->where('tracking_details.date_in','>=',$start)
+            // ->where('tracking_details.date_in','<=',$end)
             ->where('section.id',$section)
             ->count();
         }
@@ -451,10 +454,11 @@ class AdminController extends Controller
         }
         else{
             $year = date("Y");
+            $quarter = Carbon::now()->quarter;
             $start = $year.'-01-01 00:00:00';
             $end = $year.'-12-31 23:59:59';
     
-            $cycleend1 = DB::connection('mysql')->select("CALL chd12_printreport('$start', '$end','$section','1')");
+            $cycleend1 = DB::connection('mysql')->select("CALL countOngoing('$quarter', '$year','$section','1')");
 
             $cycleend = count($cycleend1);
         }
@@ -493,10 +497,11 @@ class AdminController extends Controller
         }
         else{
             $year = date("Y");
+            $quarter = Carbon::now()->quarter;
             $start = $year.'-01-01 00:00:00';
             $end = $year.'-12-31 23:59:59';
     
-            $ongoing1 = DB::connection('mysql')->select("CALL chd12_printreport('$start', '$end','$section','0')");
+            $ongoing1 = DB::connection('mysql')->select("CALL countOngoing ('$quarter', '$year','$section','0')");
                 
             $ongoing = count($ongoing1);
 
@@ -550,8 +555,10 @@ class AdminController extends Controller
                 $join->on('tracking_master.route_no', '=', 't2.route_no');
                  })
             ->leftjoin('tracking_details', 'tracking_details.id', '=', 't2.maxid')
-            ->where('tracking_master.prepared_date','>=',$start)
-            ->where('tracking_master.prepared_date','<=',$end)
+            ->where(DB::raw('QUARTER(tracking_master.prepared_date)'), Carbon::now()->quarter)
+            ->where(DB::raw('YEAR(tracking_master.prepared_date)'), Carbon::now()->year)
+            // ->where('tracking_master.prepared_date','>=',$start)
+            // ->where('tracking_master.prepared_date','<=',$end)
             ->where('section.id',$section)
             ->count();
         }
