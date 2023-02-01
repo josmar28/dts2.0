@@ -31,7 +31,7 @@
 }
 
 .modal-ku {
-  width: 80%;
+  width: 90%;
   margin: auto;
 }
-    </style>
+</style>

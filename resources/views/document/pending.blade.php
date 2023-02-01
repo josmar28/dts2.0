@@ -196,7 +196,11 @@ use App\Http\Controllers\ReleaseController as Rel;
                         </tr>
                         <tr>
                             <td>Type:</td>
-                            <td>{{ Doc::getDocType($row->route_no) }}</td>
+                            <?php
+                                $doc_desc = Doc::getDocDesc ($row->route_no);
+                                $doc_type = Doc::getDocType ($doc_desc);
+                            ?>
+                            <td>{{ $doc_desc }}</td>
                         </tr>
                         <tr>
                             <td>Duration:</td>
@@ -206,12 +210,26 @@ use App\Http\Controllers\ReleaseController as Rel;
                             <td colspan="2">
                                 <a href="#track" data-link="{{ asset('document/track/'.$row->route_no) }}" data-route="{{ $row->route_no }}" data-toggle="modal" class="btn btn-sm btn-info">Track</a>
                                 <button data-toggle="modal" data-target="#releaseTo" data-id="{{ $row->id }}" data-route_no="{{ $row->route_no }}" onclick="putRoute($(this))" type="button" class="btn btn-success btn-sm">Release</button>
+                                @if($section == 82 && $doc_type == 'PR_CATERING' || $section == 82 && $doc_type == 'PR_COLAT'  ||$section == 82 && $doc_type == 'PR_DRUG'  || $section == 82 && $doc_type == 'PR_ITSUP'  
+                                ||$section == 82 && $doc_type == 'PR_MEDEQ'  ||$section == 82 && $doc_type == 'PR_OFFSUP' ||$section == 82 && $doc_type == 'PR_SECURITY'  ||$section == 82 && $doc_type == 'PRR_S'  ||$section == 82 && $doc_type == 'PR_CATERING' || $doc_type == 'PR_VAN')
                                 <button type="button" data-link="{{ asset('document/removepending/'.$row->id) }}" data-id="{{ $row->id }}" class="btn btn-sm btn-warning btn-end">Cycle End</button>
-                                @if(Session::get('auth')->section == 91)
+                                @endif
+
+                                @if($section == 74 && $doc_type == 'SAL' || $doc_type == 'BILLS')
+                                <button type="button" data-link="{{ asset('document/removepending/'.$row->id) }}" data-id="{{ $row->id }}" class="btn btn-sm btn-warning btn-end">Cycle End</button>
+                                @endif
+
+                                @if($section == 99 && $doc_type == 'TRF')
+                                <button type="button" data-link="{{ asset('document/removepending/'.$row->id) }}" data-id="{{ $row->id }}" class="btn btn-sm btn-warning btn-end">Cycle End</button>
+                                @endif
+
+                                @if($section == 91 && $doc_type == 'RPO' || $doc_type == 'COM_LET')
+                                <button type="button" data-link="{{ asset('document/removepending/'.$row->id) }}" data-id="{{ $row->id }}" class="btn btn-sm btn-warning btn-end">Cycle End</button>
+                                @endif
+
+                                @if($section == 96 && $doc_type == 'VEHICLE')
                                 <button type="button" data-link="{{ asset('document/removeOutgoing/'.$row->id) }}" data-id="{{ $row->id }}" class="btn btn-sm btn-danger btn-remote-outgoing">Remove</button>
                                 @endif
-                               
-                           
                             </td>
                         </tr>
                     </table>

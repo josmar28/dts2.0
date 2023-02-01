@@ -387,10 +387,19 @@ class DocumentController extends Controller
         return Session::get('name');
     }
 
-    public static function getDocType($route_no)
+    public static function getDocDesc ($route_no)
     {
         $doc = Tracking::where('route_no',$route_no)->first();
-        return self::docTypeName($doc->doc_type);
+
+        $desc = Tracking_Filter::where('doc_type',$doc->doc_type)->pluck('doc_description')->first();
+        return $desc;
+    }
+
+    public static function getDocType($doc_type)
+    {
+        $desc = Tracking_Filter::where('doc_description',$doc_type)->pluck('doc_type')->first();
+
+        return $desc;
     }
     public static function docTypeName($type)
     {
@@ -651,19 +660,26 @@ class DocumentController extends Controller
 
     public function track($route_no)
     {
+
             $document = Tracking_Details::where('route_no',$route_no)
             ->orderBy('date_in','asc')
             ->get();
 
             $prepared_by = Tracking::where('route_no',$route_no)->pluck('prepared_by')->first();
 
+            $section = Users::find($prepared_by)->section;
+            $division  = Section::where('id',$section)->pluck('division')->first();
+
+            $status =  Tracking_Details::where('route_no',$route_no)
+            ->orderBy('date_in','desc')
+            ->pluck('status')
+            ->first();
+
             $doc_type = Tracking::where('route_no',$route_no)
             ->pluck('doc_type')
             ->first();
 
-            $barcode = Tracking::where('route_no',$route_no)
-            ->pluck('pr_no')
-            ->first();
+            $barcode = array();
             
             if($barcode)
             {
@@ -733,8 +749,6 @@ class DocumentController extends Controller
                         $data['released_status'][] = "";
                         $data['released_duration_status'][] = "";
                         }
-
-                    
                 }
 
                 }
@@ -750,6 +764,7 @@ class DocumentController extends Controller
                     // print_r('<br>');
                     $bypass[] = "";
                     $bypass_section[] = "";
+                    // $step[]="";
 
                     // if( ($data['released_section_to_id'][$i] == 99 || $data['released_section_to_id'][$i] == 73) || ($data['released_section_to_id'][$i] == 90 
                     // || $data['released_section_to_id'][$i] == 83) || ($data['released_section_to_id'][$i] == 95 || $data['released_section_to_id'][$i] == 82)
@@ -760,99 +775,491 @@ class DocumentController extends Controller
                     // else{
                     //  $bypass[] = $data['route_no'][$i];
                     // }
-                   
+                    $steps[] = "";
+                    $step2 = 0;
+                    if($doc_type == 'PR_CATERING' || $doc_type == 'PR_COLAT'  || $doc_type == 'PR_DRUG'  || $doc_type == 'PR_ITSUP' 
+                        || $doc_type == 'PR_MEDEQ'  || $doc_type == 'PR_OFFSUP' || $doc_type == 'PR_SECURITY'  || $doc_type == 'PRR_S'  
+                        || $doc_type == 'PR_CATERING' || $doc_type == 'PR_VAN')
+                    {
+                        if($data['released_section_to_id'][$i] == 99 || $data['released_section_to_id'][$i] == 113)
+                        {
+                            $steps[] = 1;
+                        }
+                        elseif( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 73)
+                        {
+                            $steps[] = 2;
+                        }
+                        elseif( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 90)
+                        {
+                            $steps[] = 3;
+                        }
+                        elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 83)
+                        {
+                            $steps[] = 4;
+                        }
+                        elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 95)
+                        {
+                            $steps[] = 5;
+                        }
+                        elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 82)
+                        {
+                            $steps[] = 6;
+                        }
+                        elseif ($data['released_section_to_id'][count($data['id'])-1] == "" && $status == 1)
+                        {
+                            $steps[] = 7;
+                        }
+                    }
+                    elseif($doc_type == 'TRF')
+                    {
+                        if($division == '7')
+                        {
+                            if( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 85)
+                            {
+                                $steps[] = 1;
+                            }
+                            elseif( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 73)
+                            {
+                                $steps[] = 2;
+                            }
+                            elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 99)
+                            {
+                                $steps[] = 3;
+                            }
+                            elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 83)
+                            {
+                                $steps[] = 4;
+                            }
+                            elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 99)
+                            {
+                                $steps[] = 5;
+                            }
+                            elseif ($data['released_section_to_id'][count($data['id'])-1] == "" && $status == 1)
+                            {
+                                $steps[] = 6;
+                            }
+                        }
+                        if($division == '8' || $division == '9')
+                        {
+                            if( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 113 || $data['released_section_to_id'][$i] == 137)
+                            {
+                                $steps[] = 1;
+                            }
+                            elseif( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 85)
+                            {
+                                $steps[] = 2;
+                            }
+                            elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 73)
+                            {
+                                $steps[] = 3;
+                            }
+                            elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 99)
+                            {
+                                $steps[] = 4;
+                            }
+                            elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 83)
+                            {
+                                $steps[] = 5;
+                            }
+                            elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 99)
+                            {
+                                $steps[] = 6;
+                            }
+                            elseif ($data['released_section_to_id'][count($data['id'])-1] == "" && $status == 1)
+                            {
+                                $steps[] = 7;
+                            }
+                        }
+                    }
+                    elseif($doc_type == 'RPO')
+                    {
+                        if( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 83)
+                        {
+                            $steps[] = 1;
+                        }
+                        elseif( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 91)
+                        {
+                            $steps[] = 2;
+                        }
+                        elseif ($data['released_section_to_id'][count($data['id'])-1] == "" && $status == 1)
+                        {
+                            $steps[] = 3;
+                        }
+                    }
+                    elseif($doc_type == 'TEV')
+                    {
+                        if( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 113 || $data['released_section_to_id'][$i] == 99)
+                        {
+                            $steps[] = 1;
+                        }
+                        elseif( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 84)
+                        {
+                            $steps[] = 2;
+                        }
+                        elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 73)
+                        {
+                            $steps[] = 3;
+                        }
+                        elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 90)
+                        {
+                            $steps[] = 4;
+                        }
+                        elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][4] == 83 || $data['released_section_to_id'][4] == 84)
+                        {
+                            $steps[] = 5;
+                        }
+                        elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 74)
+                        {
+                            $steps[] = 6;
+                        }
+                        elseif ($data['released_section_to_id'][count($data['id'])-1] == "" && $status == 1)
+                        {
+                            $steps[] = 7;
+                        }
+                    }
+                    elseif($doc_type == 'COM_LETTER')
+                    {
+                        if($division == '7')
+                        {
+                            if( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 99)
+                            {
+                                $steps[] = 1;
+                            }
+                            elseif( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 83)
+                            {
+                                $steps[] = 2;
+                            }
+                            elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 91)
+                            {
+                                $steps[] = 3;
+                            }   
+                            elseif ($data['released_section_to_id'][count($data['id'])-1] == "" && $status == 1)
+                            {
+                                $steps[] = 4;
+                            }
 
-                    if($data['released_section_to_id'][0] == 99 || $data['released_section_to_id'][0] == 113)
-                    {
-                        $step = 1;
-                    }
-                    elseif($data['released_section_to_id'][0] != 99 || $data['released_section_to_id'][0] != 113)
-                    {
-                        $bypass[] = $data['route_no'][$i];
-                        $bypass_section[] = $data['released_section_to_id'][$i];
-                        $step = -1.5;
-
-                        continue;
-                    }
-
-                    if( isset($data['released_section_to_id'][1]) && $data['released_section_to_id'][1] == 73)
-                    {
-                        $step = 2;
-                    }
-                    elseif(isset($data['released_section_to_id'][1]) && $data['released_section_to_id'][1] != 73)
-                    {
-                        $bypass[] = $data['route_no'][$i];
-                        $bypass_section[] = $data['released_section_to_id'][$i];
-                        $step = -2.5;
-                        continue;
-                    }
-
-                    if( isset($data['released_section_to_id'][2]) && $data['released_section_to_id'][2] == 90)
-                    {
-                        $step = 3;
-                    }
-                    elseif( isset($data['released_section_to_id'][2]) && $data['released_section_to_id'][2] != 90)
-                    {
-                        $bypass[] = $data['route_no'][$i];
-                        $bypass_section[] = $data['released_section_to_id'][$i];
-                        $step = -3.5;
-                        continue;
-                    }
+                            // if(!isset($data['released_section_to_id'][0]) || $data['released_section_to_id'][0] == null)
+                            // {
+                            //     $step = 0.5;
+                            //     continue;
+                            // }
+                            // elseif($data['released_section_to_id'][0] == 99)
+                            // {
+                            //     $step = 1;
+                            // }
+                            // elseif($data['released_section_to_id'][0] != 99)
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 1.5;
+                            // }
 
 
-                    if(isset($data['released_section_to_id'][3]) && $data['released_section_to_id'][3] == 83)
-                    {
-                        $step = 4;
-                    }
-                    elseif(isset($data['released_section_to_id'][3]) && $data['released_section_to_id'][3] != 83)
-                    {
-                        $bypass[] = $data['route_no'][$i];
-                        $bypass_section[] = $data['released_section_to_id'][$i];
-                        $step = -4.5;
-                        continue;
-                    }
+                            // if(!isset($data['released_section_to_id'][1]) || $data['released_section_to_id'][1] == null)
+                            // {
+                            //     continue;
+                            // }
+                            // elseif($data['released_section_to_id'][1] == 84 || $data['released_section_to_id'][1] == 83)
+                            // {
+                            //     $step = 2;
+                            // }
+                            // elseif($data['released_section_to_id'][1] != 84 || $data['released_section_to_id'][1] != 83)
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 2.5;
+                            // }
+    
+    
+                            // if(!isset($data['released_section_to_id'][2]) || $data['released_section_to_id'][2] == null)
+                            // {
+                            //     continue;
+                            // }
+                            // elseif( isset($data['released_section_to_id'][2]) && $data['released_section_to_id'][2] == 91)
+                            // {
+                            //     $step = 3;
+                            // }
+                            // elseif(isset($data['released_section_to_id'][2]) && $data['released_section_to_id'][2] != 91)
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 3.5;
+                            // }
+    
+
+                            // if(!isset($data['released_section_to_id'][3]) || $data['released_section_to_id'][3] == null)
+                            // {
+                            //     continue;
+                            // }
+                            // elseif (isset($data['released_section_to_id'][3]) && $data['released_section_to_id'][3] == "")
+                            // {
+                            //     $step = 4;
+                            // }
+                            // elseif(isset($data['released_section_to_id'][3]) && $data['released_section_to_id'][3] != "")
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 4.5;
+                            // }
+                        }
+
+                        if($division == '8')
+                        {
+                            
+
+                            if( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 113)
+                            {
+                                $steps[] = 1;
+                            }
+                            elseif( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 99)
+                            {
+                                $steps[] = 2;
+                            }
+                            elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 84 || $data['released_section_to_id'][$i] == 83)
+                            {
+                                $steps[] = 3;
+                            }
+                            elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 91)
+                            {
+                                $steps[] = 4;
+                            }
+                            elseif ($data['released_section_to_id'][count($data['id'])-1] == "" && $status == 1)
+                            {
+                                $steps[] = 5;
+                            }
 
 
-                    if(isset($data['released_section_to_id'][4]) && $data['released_section_to_id'][4] == 95)
-                    {
-                        $step = 5;
+                            // if(!isset($data['released_section_to_id'][0]) || $data['released_section_to_id'][0] == null)
+                            // {
+                            //     $step = 0.5;
+                            //     continue;
+                            // }
+                            // elseif($data['released_section_to_id'][0] == 113)
+                            // {
+                            //     $step = 1;
+                            // }
+                            // elseif($data['released_section_to_id'][0] != 113)
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 1.5;
+                            // }
+
+                            // if(!isset($data['released_section_to_id'][1]) || $data['released_section_to_id'][1] == null)
+                            // {
+                            //     continue;
+                            // }
+                            // elseif($data['released_section_to_id'][1] == 84 || $data['released_section_to_id'][1] == 99)
+                            // {
+                            //     $step = 2;
+                            // }
+                            // elseif($data['released_section_to_id'][1] != 84 || $data['released_section_to_id'][10] != 99)
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 2.5;
+                            // }
+    
+                            // if(!isset($data['released_section_to_id'][2]) || $data['released_section_to_id'][2] == null)
+                            // {
+                            //     continue;
+                            // }
+                            // elseif($data['released_section_to_id'][2] == 84 || $data['released_section_to_id'][2] == 83)
+                            // {
+                            //     $step = 3;
+                            // }
+                            // elseif($data['released_section_to_id'][2] != 84 || $data['released_section_to_id'][2] != 83)
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 3.5;
+                            // }
+    
+    
+                            // if(!isset($data['released_section_to_id'][3]) || $data['released_section_to_id'][3] == null)
+                            // {
+                            //     continue;
+                            // }
+                            // elseif( isset($data['released_section_to_id'][3]) && $data['released_section_to_id'][3] == 91)
+                            // {
+                            //     $step = 4;
+                            // }
+                            // elseif(isset($data['released_section_to_id'][3]) && $data['released_section_to_id'][3] != 91)
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 4.5;
+                            // }
+    
+
+                            // if(!isset($data['released_section_to_id'][4]) || $data['released_section_to_id'][4] == null)
+                            // {
+                            //     continue;
+                            // }
+                            // elseif (isset($data['released_section_to_id'][4]) && $data['released_section_to_id'][4] == "")
+                            // {
+                            //     $step = 5;
+                            // }
+                            // elseif(isset($data['released_section_to_id'][4]) && $data['released_section_to_id'][4] != "")
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 5.5;
+                            // }
+                        }
                     }
-                    elseif(isset($data['released_section_to_id'][4]) && $data['released_section_to_id'][4] != 95)
+                    elseif($doc_type == 'VEHICLE')
                     {
-                        $bypass[] = $data['route_no'][$i];
-                        $bypass_section[] = $data['released_section_to_id'][$i];
-                        $step = -5.5;
-                        continue;
-                    }
+                        if($division == '7')
+                        {
+
+                            if( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 99)
+                            {
+                                $steps[] = 1;
+                            }
+                            elseif( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 96)
+                            {
+                                $steps[] = 2;
+                            }
+                            elseif ($data['released_section_to_id'][count($data['id'])-1] == "" && $status == 1)
+                            {
+                                $steps[] = 3;
+                            }
+
+                            // if(!isset($data['released_section_to_id'][0]) || $data['released_section_to_id'][0] == null)
+                            // {
+                            //     $step = 0.5;
+                            //     continue;
+                            // }
+                            // elseif($data['released_section_to_id'][0] == 99)
+                            // {
+                            //     $step = 1;
+                            // }
+                            // elseif($data['released_section_to_id'][0] != 99)
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 1.5;
+                            // }
+
+                            // if(!isset($data['released_section_to_id'][1]) || $data['released_section_to_id'][1] == null)
+                            // {
+                            //     continue;
+                            // }
+                            // elseif($data['released_section_to_id'][1] == 96)
+                            // {
+                            //     $step = 2;
+                            // }
+                            // elseif($data['released_section_to_id'][1] != 96)
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 2.5;
+                            // }
+    
+
+                            // if(!isset($data['released_section_to_id'][2]) || $data['released_section_to_id'][2] == null)
+                            // {
+                            //     continue;
+                            // }
+                            // elseif (isset($data['released_section_to_id'][2]) && $data['released_section_to_id'][2] == "")
+                            // {
+                            //     $step = 3;
+                            // }
+                            // elseif(isset($data['released_section_to_id'][2]) && $data['released_section_to_id'][2] != "")
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 3.5;
+                            // }
+                        }
+
+                        if($division == '8' || $division == '9')
+                        {
+                            if( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 113)
+                            {
+                                $steps[] = 1;
+                            }
+                            elseif( isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 99)
+                            {
+                                $steps[] = 2;
+                            }
+                            elseif(isset($data['released_section_to_id'][$i]) && $data['released_section_to_id'][$i] == 96)
+                            {
+                                $steps[] = 3;
+                            }
+                            elseif ($data['released_section_to_id'][count($data['id'])-1] == "" && $status == 1)
+                            {
+                                $steps[] = 4;
+                            }
+
+                            
+                            // if(!isset($data['released_section_to_id'][0]) || $data['released_section_to_id'][0] == null)
+                            // {
+                            //     $step = 0.5;
+                            //     continue;
+                            // }
+                            // elseif($data['released_section_to_id'][0] == 114 || $data['released_section_to_id'][0] == 113 )
+                            // {
+                            //     $step = 1;
+                            // }
+                            // elseif($data['released_section_to_id'][0] != 114 || $data['released_section_to_id'][0] != 113)
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 1.5;
+                            // }
+
+                            // if(!isset($data['released_section_to_id'][1]) || $data['released_section_to_id'][1] == null)
+                            // {
+                            //     continue;
+                            // }
+                            // elseif($data['released_section_to_id'][1] == 99)
+                            // {
+                            //     $step = 2;
+                            // }
+                            // elseif($data['released_section_to_id'][1] != 99)
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 2.5;
+                            // }
 
 
-                    if(isset($data['released_section_to_id'][5]) && $data['released_section_to_id'][5] == 82)
-                    {
-                        $step = 6;
-                    }
-                    if(isset($data['released_section_to_id'][5]) && $data['released_section_to_id'][5] != 82)
-                    {
-                        $bypass[] = $data['route_no'][$i];
-                        $bypass_section[] = $data['released_section_to_id'][$i];
-                        $step = -6.5;
-                        continue;
-                    }
+                            // if(!isset($data['released_section_to_id'][2]) || $data['released_section_to_id'][2] == null)
+                            // {
+                            //     continue;
+                            // }
+                            // elseif($data['released_section_to_id'][2] == 96)
+                            // {
+                            //     $step = 3;
+                            // }
+                            // elseif($data['released_section_to_id'][2] != 96)
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 3.5;
+                            // }
+    
 
-                
-                    if (isset($data['released_section_to_id'][6]) && $data['released_section_to_id'][6] == "")
-                    {
-                        $step = 7;
+                            // if(!isset($data['released_section_to_id'][3]) || $data['released_section_to_id'][3] == null)
+                            // {
+                            //     continue;
+                            // }
+                            // elseif (isset($data['released_section_to_id'][3]) && $data['released_section_to_id'][3] == "")
+                            // {
+                            //     $step = 4;
+                            // }
+                            // elseif(isset($data['released_section_to_id'][3]) && $data['released_section_to_id'][3] != "")
+                            // {
+                            //     $bypass[] = $data['route_no'][$i];
+                            //     $bypass_section[] = $data['released_section_to_id'][$i];
+                            //     $step2 = 4.5;
+                            // }
+                        }
                     }
-                    elseif(isset($data['released_section_to_id'][6]) && $data['released_section_to_id'][6] != "")
-                    {
-                        $bypass[] = $data['route_no'][$i];
-                        $bypass_section[] = $data['released_section_to_id'][$i];
-                        $step = -7.5;
-                        continue;
-                    }
-                   
                 }
-                print_r($step);
+           
             
         Session::put('route_no', $route_no);
          return view('document.track',[
@@ -861,8 +1268,11 @@ class DocumentController extends Controller
                 'doc_type' => $doc_type,
                 'barcode' => $barcode,
                 'pr_no' => $pr_no,
-                'step' => $step,
-                'po_no' => $po_no
+                'steps' => $steps,
+                'step' => 0,
+                'step2' => $step2,
+                'po_no' => $po_no,
+                'division' => $division
                 ]);
     }
 
@@ -955,7 +1365,8 @@ class DocumentController extends Controller
             'data'=> $data,
             'incomingInput' => $keywordIncoming,
             'outgoingInput' => $keywordOutgoing,
-            'unconfirmedInput' => $keywordUnconfirmed
+            'unconfirmedInput' => $keywordUnconfirmed,
+            'section' => $user->section
         ]);
     }
 

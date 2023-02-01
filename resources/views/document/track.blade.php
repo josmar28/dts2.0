@@ -22,94 +22,96 @@ foreach($po_no as $po_num)
             <?php
              if ($section == '78' || $section == '79' || $section == '80' || $section == '81' || $section == '120' )
              {
-                echo '<i class="fa fa-warning"></i> Documents that not accepted within 1 office day will be reported';
+                echo '<i class="fa fa-warning"></i> Documents that not accepted within 24 hours will be reported';
              }
              else
               {
                 echo '<i class="fa fa-warning"></i> Documents that not accepted within 45 minutes will be reported';
-                echo '<br><i class="fa fa-warning"></i> If Document is from RLED, PDOHO, and DATRC it will be reported within 1 office day';
+                echo '<br><i class="fa fa-warning"></i> If Document is from PDOHO, and DATRC it will be reported within 24 hours';
             }
           ?>
+
         </div>
-        <div class="row bs-wizard" style="border-bottom:0;">
+        @if($doc_type == 'PR_CATERING' || $doc_type == 'PR_COLAT'  || $doc_type == 'PR_DRUG'  || $doc_type == 'PR_ITSUP'  || $doc_type == 'PR_MEDEQ'  || $doc_type == 'PR_OFFSUP' 
+        || $doc_type == 'PR_SECURITY'  || $doc_type == 'PRR_S'  || $doc_type == 'PR_CATERING' || $doc_type == 'PR_VAN')
+            <div class="row bs-wizard" style="border-bottom:0;">
 
-                        <div class="col-xs-2 bs-wizard-step @if($step==-1.5) active @elseif($step>=1) complete @else disabled @endif"><!-- complete -->
-                        <div class="text-center bs-wizard-stepnum">
-                                @if($step==-1.5)
-                                    <span class="text-danger">Bypass Chief Administrative Office</span>
-                                @else
-                                Chief Administrative Office
-                                @endif
-                           
-                        </div>
-                            <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==-1.5) Bypass @else CAO @endif" @if($step==-1.5) style="background-color:#a94442;" @endif ></a>
-                        </div>
-
-                        <div class="col-xs-2 bs-wizard-step @if($step==2) active @elseif($step>=2) complete @else disabled @endif"><!-- complete -->
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==1) complete @break   @endif @endfor"><!-- complete -->
                             <div class="text-center bs-wizard-stepnum">
-                                @if($step==-2.5)
+                                    @if($step2 != 0 && $step < 1)
+                                        <span class="text-danger">Bypass Chief Administrative Office</span>
+                                    @else
+                                    Chief Administrative Office
+                                    @endif
+                            </div>
+                                <div class="progress"><div class="progress-bar"></div></div>
+                                <a href="javascript:void(0)" class="bs-wizard-dot active" data-toggle="tooltip" data-placement="top" ></a>
+                            </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==2) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=2.5)
                                     <span class="text-danger">Bypass Budget Section</span>
                                 @else
-                                Budget Section
+                                    Budget Section
                                 @endif
-
                             </div>
                             <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==-2.5) Bypass @else Budget @endif" @if($step==-2.5) style="background-color:#a94442;" @endif ></a>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" ></a>
                         </div>
 
-                        <div class="col-xs-2 bs-wizard-step @if($step==3) active @elseif($step>=3) complete @else disabled @endif"><!-- complete -->
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==3) complete @break  @endif @endfor"><!-- complete -->
                             <div class="text-center bs-wizard-stepnum">
-                                @if($step==-3.5)
-                                    <span class="text-danger">Bypass Accounting Section</span>
+                                @if($step2>=3.5)
+                                    <span class="text-danger">Bypass Accounting Section </span>
                                 @else
-                                Accounting Section
+                                Accounting Section 
                                 @endif
                             </div>
                             <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==-3.5) Bypass @else Accounting @endif" @if($step==-3.5) style="background-color:#a94442;" @endif></a>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top"></a>
                         </div>
 
-                        <div class="col-xs-2 bs-wizard-step @if($step==4) active @elseif($step>=4) complete @else disabled @endif"><!-- complete -->
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==4) complete @break  @endif  @endfor"><!-- complete -->
                           <div class="text-center bs-wizard-stepnum">
-                                @if($step==-4.5)
+                                @if($step2>=4.5)
                                     <span class="text-danger">Bypass  Regional Directors Office - RD</span>
                                 @else
                                  Regional Directors Office - RD
                                 @endif
-                           
                         </div>
                             <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==-4.5) Didn't Bypass  Regional Directors Office @else Regional Directors Office @endif" @if($step==-4.5) style="background-color:#a94442;" @endif></a>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" ></a>
                         </div>
-                        <div class="col-xs-2 bs-wizard-step @if($step==5) active @elseif($step>=5) complete @else disabled @endif"><!-- complete -->
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==5) complete @break  @endif @endfor"><!-- complete -->
                             <div class="text-center bs-wizard-stepnum">
-                                @if($step==-5.5)
+                                @if($step2>=5.5)
                                     <span class="text-danger">Bypass Supply Unit</span>
                                 @else
                                  Supply Unit
                                 @endif
-
                             </div>
                             <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==-5.5) Didn't Bypass Supply @else Supply @endif" @if($step==-5.5) style="background-color:#a94442;" @endif></a>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" ></a>
                         </div>
-                        <div class="col-xs-2 bs-wizard-step @if($step==6) active @elseif($step>=6) complete @else disabled @endif"><!-- complete -->
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==6) complete @break  @endif @endfor"><!-- complete -->
                             <div class="text-center bs-wizard-stepnum">
-                                @if($step==-6.5)
+                                @if($step2>=5.5)
                                     <span class="text-danger">Bypass Procurement Unit</span>
                                 @else
                                  Procurement Unit
                                 @endif
-                                
+
                             </div>
                             <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==-6.5) Didn't Bypass Procurement @else Procurement @endif" @if($step==-6.5) style="background-color:#a94442;" @endif></a>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top"></a>
                         </div>
-                        <div class="col-xs-2 bs-wizard-step @if($step==7) active @elseif($step>=7) complete @else disabled @endif"><!-- complete -->
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==7) complete @break  @endif @endfor"><!-- complete -->
                             <div class="text-center bs-wizard-stepnum">
-                                @if($step==-7.5)
+                                @if($step2>=7.5)
                                     <span class="text-danger">Bypass End Cycle</span>
                                 @else
                                  End Cycle
@@ -117,12 +119,567 @@ foreach($po_no as $po_num)
                                 
                             </div>
                             <div class="progress"><div class="progress-bar"></div></div>
-                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==-7.5) Didn't Bypass End Cycle @else End Cycle @endif" @if($step==-7.5) style="background-color:#a94442;" @endif></a>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" ></a>
+                        </div>
+                    </div>
+            </div>
+        @endif
+
+        @if($doc_type == 'TRF')
+            @if($division == '7')
+            <div class="row bs-wizard" style="border-bottom:0;">
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==1) complete @break   @endif @endfor"><!-- complete -->
+                        <div class="text-center bs-wizard-stepnum">
+                                @if($step2 != 0 && $step < 1)
+                                    <span class="text-danger">Bypass Chief Administrative Office</span>
+                                @else
+                                HRDU
+                                @endif
+                           
+                        </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==1.5) Bypass @else CAO @endif" @if($step==1.5) style="background-color:#a94442;" @endif ></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==2) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=2.5)
+                                    <span class="text-danger">Bypass HRDU</span>
+                                @else
+                                Budget 
+                                @endif
+
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==2.5) Bypass @else Budget @endif" @if($step==2.5) style="background-color:#a94442;" @endif ></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==3) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=3.5)
+                                    <span class="text-danger">Bypass Accounting Section</span>
+                                @else
+                                CAO 
+                                @endif
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==3.5) Bypass @else Accounting @endif" @if($step==3.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==4) complete @break   @endif @endfor"><!-- complete -->
+                          <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=4.5)
+                                    <span class="text-danger">Bypass  Regional Directors Office - RD</span>
+                                @else
+                                 Regional Directors Office - RD
+                                @endif
+                           
+                        </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==4.5) Didn't Bypass  Regional Directors Office @else Regional Directors Office @endif" @if($step==4.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==5) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=5.5)
+                                    <span class="text-danger">Bypass Supply Unit</span>
+                                @else
+                                CAO 
+                                @endif
+
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==5.5) Didn't Bypass Supply @else Supply @endif" @if($step==5.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==6) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=6.5)
+                                    <span class="text-danger">Bypass Procurement Unit</span>
+                                @else
+                                End Cycle
+                                @endif
+                                
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==6.5) Didn't Bypass Procurement @else Procurement @endif" @if($step==6.5) style="background-color:#a94442;" @endif></a>
                         </div>
                     </div>
 
-        </div>
-        
+            </div>
+            @elseif($division == '8' || $division == '9')
+            <div class="row bs-wizard" style="border-bottom:0;">
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==1) complete @break   @endif @endfor"><!-- complete -->
+                        <div class="text-center bs-wizard-stepnum">
+                                @if($step2 != 0 && $step < 1)
+                                    <span class="text-danger">Bypass Chief Administrative Office</span>
+                                @else
+                                Chief LHSD/RLED 
+                                @endif
+                           
+                        </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==1.5) Bypass @else CAO @endif" @if($step==1.5) style="background-color:#a94442;" @endif ></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==2) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=2.5)
+                                    <span class="text-danger">Bypass HRDU</span>
+                                @else
+                                HRDU  
+                                @endif
+
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==2.5) Bypass @else Budget @endif" @if($step==2.5) style="background-color:#a94442;" @endif ></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==3) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=3.5)
+                                    <span class="text-danger">Bypass Accounting Section</span>
+                                @else
+                                Budget 
+                                @endif
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==3.5) Bypass @else Accounting @endif" @if($step==3.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==4) complete @break   @endif @endfor"><!-- complete -->
+                          <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=4.5)
+                                    <span class="text-danger">Bypass  Regional Directors Office - RD</span>
+                                @else
+                                 CAO
+                                @endif
+                           
+                        </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==4.5) Didn't Bypass  Regional Directors Office @else Regional Directors Office @endif" @if($step==4.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==5) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=5.5)
+                                    <span class="text-danger">Bypass Supply Unit</span>
+                                @else
+                                Regional Directors Office - RD 
+                                @endif
+
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==5.5) Didn't Bypass Supply @else Supply @endif" @if($step==5.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==6) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=6.5)
+                                    <span class="text-danger">Bypass Procurement Unit</span>
+                                @else
+                                CAO
+                                @endif
+                                
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==6.5) Didn't Bypass Procurement @else Procurement @endif" @if($step==6.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==7) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=6.5)
+                                    <span class="text-danger">Bypass Procurement Unit</span>
+                                @else
+                                End Cycle
+                                @endif
+                                
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==6.5) Didn't Bypass Procurement @else Procurement @endif" @if($step==6.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+                    </div>
+
+            </div>
+            @endif
+        @endif
+
+        @if($doc_type == 'RPO')
+            <div class="row bs-wizard" style="border-bottom:0;">
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==1) complete @break   @endif @endfor"><!-- complete -->
+                        <div class="text-center bs-wizard-stepnum">
+                                @if($step2 != 0 && $step < 1)
+                                    <span class="text-danger">Bypass Regional Director Office - RD</span>
+                                @else
+                                    Regional Director Office - RD
+                                @endif
+                           
+                        </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==1.5) Bypass @else RD @endif" @if($step==1.5) style="background-color:#a94442;" @endif ></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==2) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=2.5)
+                                    <span class="text-danger">Bypass Records Section</span>
+                                @else
+                                Records Section
+                                @endif
+
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==2.5) Bypass @else Records @endif" @if($step==2.5) style="background-color:#a94442;" @endif ></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==3) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=3.5)
+                                    <span class="text-danger">Bypass End Cycle</span>
+                                @else
+                                 End Cycle
+                                @endif
+                                
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==3.5) Didn't Bypass End Cycle @else End Cycle @endif" @if($step==7.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+                    </div>
+
+            </div>
+        @endif
+
+        @if($doc_type == 'TEV')
+            <div class="row bs-wizard" style="border-bottom:0;">
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==1) complete @break   @endif @endfor"><!-- complete -->
+                        <div class="text-center bs-wizard-stepnum">
+                                @if($step2 != 0 && $step < 1)
+                                    <span class="text-danger">Bypass Chief Administrative Office</span>
+                                @else
+                                CAO / Chief LHSD/RLED 
+                                @endif
+                           
+                        </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==1.5) Bypass @else CAO @endif" @if($step==1.5) style="background-color:#a94442;" @endif ></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==2) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=2.5)
+                                    <span class="text-danger">Bypass ARD</span>
+                                @else
+                                ARD/RDOffice 
+                                @endif
+
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==2.5) Bypass ARD @else ARD @endif" @if($step==2.5) style="background-color:#a94442;" @endif ></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==3) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=3.5)
+                                    <span class="text-danger">Bypass Budget Section</span>
+                                @else
+                                Budget Section
+                                @endif
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==3.5) Bypass Budget @else Budget @endif" @if($step==3.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==4) complete @break   @endif @endfor"><!-- complete -->
+                          <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=4.5)
+                                    <span class="text-danger">Bypass  Accounting Section</span>
+                                @else
+                                 Accounting Section
+                                @endif
+                           
+                        </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==4.5) Didn't Bypass Accounting @else Accounting @endif" @if($step==4.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==5) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=5.5)
+                                    <span class="text-danger">BypassRD/ARD - Office</span>
+                                @else
+                                RD/ARD - Office
+                                @endif
+
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==5.5) Didn't BypassRD/ARD - Office @elseRD/ARD - Office @endif" @if($step==5.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==6) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=6.5)
+                                    <span class="text-danger">Bypass Cashier Section</span>
+                                @else
+                                 Cashier Section
+                                @endif
+                                
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==6.5) Didn't Bypass Cashier Section @else Cashier Section @endif" @if($step==6.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+                        <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==7) complete @break   @endif @endfor"><!-- complete -->
+                            <div class="text-center bs-wizard-stepnum">
+                                @if($step2>=7.5)
+                                    <span class="text-danger">Bypass End Cycle</span>
+                                @else
+                                 End Cycle
+                                @endif
+                                
+                            </div>
+                            <div class="progress"><div class="progress-bar"></div></div>
+                            <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==7.5) Didn't Bypass End Cycle @else End Cycle @endif" @if($step==7.5) style="background-color:#a94442;" @endif></a>
+                        </div>
+                    </div>
+
+            </div>
+        @endif
+
+        @if($doc_type == 'COM_LETTER')
+            @if($division == '7')
+            <div class="row bs-wizard" style="border-bottom:0;">
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==1) complete @break   @endif @endfor"><!-- complete -->
+                <div class="text-center bs-wizard-stepnum">
+                        @if($step2 != 0 && $step < 1)
+                            <span class="text-danger">Bypass Chief Administrative Office</span>
+                        @else
+                        Chief Administrative Office
+                        @endif
+                
+                </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==1.5) Bypass CAO @else CAO @endif" @if($step==1.5) style="background-color:#a94442;" @endif ></a>
+                </div>
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==2) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                        @if($step2>=2.5)
+                            <span class="text-danger">Bypass RD/ARD - Office</span>
+                        @else
+                        RD/ARD - Office
+                        @endif
+
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==2.5) Bypass RD/ARD @else RD/ARD @endif" @if($step==2.5) style="background-color:#a94442;" @endif ></a>
+                </div>
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==3) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                        @if($step2>=3.5)
+                            <span class="text-danger">Bypass Records Section</span>
+                        @else
+                        Records Section
+                        @endif
+
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==3.5) Bypass RD/ARD @else RD/ARD @endif" @if($step==3.5) style="background-color:#a94442;" @endif ></a>
+                </div>
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==4) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                        @if($step2>=3.5)
+                            <span class="text-danger">Bypass End Cycle</span>
+                        @else
+                        End Cycle
+                        @endif
+                        
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==4.5) Didn't Bypass End Cycle @else End Cycle @endif" @if($step==7.5) style="background-color:#a94442;" @endif></a>
+                </div>
+                </div>
+
+            </div>
+            @elseif($division == '8' || $division == '9')
+            <div class="row bs-wizard" style="border-bottom:0;">
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==1) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                            @if($step2 != 0 && $step < 1)
+                                <span class="text-danger">Bypass Chief LHSD Office</span>
+                            @else
+                            Chief LHSD Office
+                            @endif
+                    
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==1.5) Bypass CAO @else CAO @endif" @if($step==1.5) style="background-color:#a94442;" @endif ></a>
+                </div>
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==2) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                        @if($step2>=2.5)
+                            <span class="text-danger">Bypass Chief Administrative Office - Office</span>
+                        @else
+                        Chief Administrative Office - Office
+                        @endif
+
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==2.5) Bypass CAO @else CAO @endif" @if($step==2.5) style="background-color:#a94442;" @endif ></a>
+                </div>
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==3) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                        @if($step2>=3.5)
+                            <span class="text-danger">Bypass RD/ARD - Office</span>
+                        @else
+                        RD/ARD - Office
+                        @endif
+
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==3.5) Bypass RD/ARD @else RD/ARD @endif" @if($step==3.5) style="background-color:#a94442;" @endif ></a>
+                </div>
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==4) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                        @if($step2>=4.5)
+                            <span class="text-danger">Bypass Records Section</span>
+                        @else
+                        Records Section
+                        @endif
+
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==4.5) Bypass RD/ARD @else RD/ARD @endif" @if($step==4.5) style="background-color:#a94442;" @endif ></a>
+                </div>
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==5) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                        @if($step2>=5.5)
+                            <span class="text-danger">Bypass End Cycle</span>
+                        @else
+                        End Cycle
+                        @endif
+                        
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==5.5) Didn't Bypass End Cycle @else End Cycle @endif" @if($step==7.5) style="background-color:#a94442;" @endif></a>
+                </div>
+                </div>
+
+            </div>
+            @endif
+        @endif
+
+        @if($doc_type == 'VEHICLE')
+            @if($division == '7')
+            <div class="row bs-wizard" style="border-bottom:0;">
+
+            <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==1) complete @break   @endif @endfor"><!-- complete -->
+                <div class="text-center bs-wizard-stepnum">
+                        @if($step2 != 0 && $step < 1)
+                            <span class="text-danger">Bypass Chief Administrative Office</span>
+                        @else
+                        Chief Administrative Office
+                        @endif
+                
+                </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==1.5) Bypass CAO @else CAO @endif" @if($step==1.5) style="background-color:#a94442;" @endif ></a>
+                </div>
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==2) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                        @if($step2>=2.5)
+                            <span class="text-danger">Bypass General Services</span>
+                        @else
+                        General Services
+                        @endif
+
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==2.5) Bypass GSS @else GSS @endif" @if($step==2.5) style="background-color:#a94442;" @endif ></a>
+                </div>
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==3) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                        @if($step2>=3.5)
+                            <span class="text-danger">Bypass End Cycle</span>
+                        @else
+                        End Cycle
+                        @endif
+                        
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==3.5) Didn't Bypass End Cycle @else End Cycle @endif" @if($step==7.5) style="background-color:#a94442;" @endif></a>
+                </div>
+                </div>
+
+            </div>
+            @elseif($division == '8' || $division == '9')
+            <div class="row bs-wizard" style="border-bottom:0;">
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==1) complete @break   @endif @endfor"><!-- complete -->
+                <div class="text-center bs-wizard-stepnum">
+                        @if($step2 != 0 && $step < 1)
+                            <span class="text-danger">Bypass Chief LHSD/RLED</span>
+                        @else
+                        Chief LHSD/RLED
+                        @endif
+                
+                </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==1.5) Bypass Chief LHSD/RLED @else Chief LHSD/RLED @endif" @if($step==1.5) style="background-color:#a94442;" @endif ></a>
+                </div>
+
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==2) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                        @if($step2>=2.5)
+                            <span class="text-danger">Bypass Chief Administrative Office</span>
+                        @else
+                        Chief Administrative Office
+                        @endif
+
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==2.5) Bypass CAO @else CAO @endif" @if($step==2.5) style="background-color:#a94442;" @endif ></a>
+                </div>
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==3) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                        @if($step2>=2.5)
+                            <span class="text-danger">Bypass General Services</span>
+                        @else
+                        General Services
+                        @endif
+
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==2.5) Bypass GSS @else GSS @endif" @if($step==2.5) style="background-color:#a94442;" @endif ></a>
+                </div>
+
+                <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==4) complete @break   @endif @endfor"><!-- complete -->
+                    <div class="text-center bs-wizard-stepnum">
+                        @if($step2>=3.5)
+                            <span class="text-danger">Bypass End Cycle</span>
+                        @else
+                        End Cycle
+                        @endif
+                        
+                    </div>
+                    <div class="progress"><div class="progress-bar"></div></div>
+                    <a href="javascript:void(0)" class="bs-wizard-dot" data-toggle="tooltip" data-placement="top" title="@if($step==3.5) Didn't Bypass End Cycle @else End Cycle @endif" @if($step==7.5) style="background-color:#a94442;" @endif></a>
+                </div>
+                </div>
+
+            </div>
+            @endif
+        @endif
     </div>
     <table class="table table-hover table-striped">
         <thead>
