@@ -349,7 +349,7 @@ foreach($po_no as $po_num)
             </div>
         @endif
 
-        @if($doc_type == 'TEV')
+        @if($doc_type == 'TEV') 
             <div class="row bs-wizard" style="border-bottom:0;">
 
                         <div class="col-xs-2 bs-wizard-step @for($i=0;$i<count($steps);$i++) @if($steps[$i]==1) complete @break   @endif @endfor"><!-- complete -->
